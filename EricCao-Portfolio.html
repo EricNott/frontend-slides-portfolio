@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eric (Yukun) Cao — Portfolio</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap">
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
+  <style>
+    /* ===========================================
+       THEME — Edit these variables to restyle everything
+       =========================================== */
+    :root {
+      --bg:           #0b0d12;
+      --bg2:          #111520;
+      --bg3:          #161c2a;
+      --accent:       #00c8ff;
+      --accent-dim:   rgba(0, 200, 255, 0.10);
+      --accent-bdr:   rgba(0, 200, 255, 0.20);
+      --accent-glow:  rgba(0, 200, 255, 0.30);
+      --text:         #e8edf5;
+      --muted:        rgba(232, 237, 245, 0.50);
+      --subtle:       rgba(232, 237, 245, 0.18);
+
+      --font-display: 'Clash Display', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+      --font-mono:    'DM Mono', monospace;
+
+      /* All sizes use clamp() to scale with viewport */
+      --title-size:   clamp(2.8rem, 7vw, 6.5rem);
+      --h2-size:      clamp(1.4rem, 3vw, 2.4rem);
+      --h3-size:      clamp(1rem,  2vw, 1.5rem);
+      --body-size:    clamp(0.78rem, 1.2vw, 0.95rem);
+      --small-size:   clamp(0.65rem, 0.9vw, 0.78rem);
+      --label-size:   clamp(0.58rem, 0.8vw, 0.68rem);
+
+      --slide-pad:    clamp(1.5rem, 4vw, 4rem);
+      --content-gap:  clamp(0.8rem, 1.5vw, 1.5rem);
+      --el-gap:       clamp(0.35rem, 0.7vw, 0.65rem);
+
+      --nav-h:        54px;
+      --ease-expo:    cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ===========================================
+       RESET & BASE
+       =========================================== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      height: 100%;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      height: 100%;
+      overflow-x: hidden;
+    }
+
+    /* ===========================================
+       NAVBAR — Fixed top, transparent with blur
+       =========================================== */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: var(--nav-h);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 var(--slide-pad);
+      background: rgba(11, 13, 18, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--accent-bdr);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: clamp(0.85rem, 1.5vw, 1rem);
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .nav-links {
+      display: flex; gap: clamp(1rem, 2.5vw, 2rem);
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a.active { color: var(--accent); }
+
+    /* ===========================================
+       SLIDES — Mandatory viewport fitting
+       =========================================== */
+    .slide {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      padding: var(--slide-pad);
+      padding-top: calc(var(--nav-h) + var(--slide-pad));
+    }
+
+    /* Subtle dot grid shared background */
+    .slide::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(0,200,255,0.06) 1px, transparent 1px);
+      background-size: 36px 36px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .slide > * { position: relative; z-index: 1; }
+
+    /* ===========================================
+       TWO-COLUMN LAYOUT (most project slides)
+       =========================================== */
+    .two-col {
+      display: grid;
+      grid-template-columns: 52% 1fr;
+      gap: clamp(2rem, 4vw, 4rem);
+      align-items: center;
+      height: 100%;
+      max-height: calc(100dvh - var(--nav-h) - calc(2 * var(--slide-pad)));
+    }
+
+    .project-text {
+      display: flex; flex-direction: column;
+      gap: var(--content-gap);
+      overflow: hidden;
+    }
+
+    .project-visual {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: var(--el-gap);
+      overflow: hidden;
+      max-height: min(75vh, 600px);
+    }
+
+    /* ===========================================
+       SLIDE IMAGES
+       =========================================== */
+    .slide-img {
+      max-width: 100%;
+      max-height: min(45vh, 380px);
+      object-fit: contain;
+      border-radius: 6px;
+      border: 1px solid var(--accent-bdr);
+      box-shadow: 0 0 30px rgba(0,200,255,0.06), 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    .slide-img.full {
+      max-height: min(55vh, 440px);
+      max-width: 100%;
+    }
+
+    .slide-img.narrow {
+      max-height: min(40vh, 320px);
+    }
+
+    /* Kymograph images are very wide — display as banners */
+    .kymo-wrap {
+      width: 100%;
+      max-height: min(28vh, 200px);
+      overflow: hidden;
+      border-radius: 4px;
+      border: 1px solid var(--accent-bdr);
+      box-shadow: 0 0 20px rgba(0,200,255,0.08);
+    }
+    .kymo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* ===========================================
+       TYPOGRAPHY
+       =========================================== */
+    .project-meta {
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+
+    .section-badge {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding: 0.25rem 0.65rem;
+      border: 1px solid var(--accent-bdr);
+      border-radius: 2px;
+      background: var(--accent-dim);
+    }
+
+    .project-num {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: var(--title-size);
+      font-weight: 600;
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+    }
+
+    h2 {
+      font-family: var(--font-display);
+      font-size: var(--h2-size);
+      font-weight: 500;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+
+    h3 {
+      font-family: var(--font-display);
+      font-size: var(--h3-size);
+      font-weight: 500;
+    }
+
+    .accent-word { color: var(--accent); }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .body-text {
+      font-size: var(--body-size);
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 55ch;
+    }
+
+    .body-text strong { color: var(--text); font-weight: 500; }
+
+    /* Bullet list */
+    .bullets {
+      list-style: none;
+      display: flex; flex-direction: column;
+      gap: var(--el-gap);
+    }
+
+    .bullets li {
+      font-size: var(--body-size);
+      color: var(--muted);
+      line-height: 1.55;
+      display: flex; align-items: flex-start; gap: 0.65rem;
+    }
+
+    .bullets li::before {
+      content: '';
+      width: 5px; height: 5px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 0.45em;
+    }
+
+    .bullets li strong { color: var(--text); }
+
+    /* Skill tags */
+    .tags {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+    }
+
+    .tag {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      padding: 0.28rem 0.7rem;
+      border: 1px solid var(--subtle);
+      border-radius: 2px;
+      background: var(--accent-dim);
+      white-space: nowrap;
+    }
+
+    /* Mini section labels (Objectives, Design Constraints, Skills Applied) */
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+      display: block;
+    }
+
+    /* Two-column split for Objectives / Design Constraints */
+    .content-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(0.75rem, 1.5vw, 1.25rem);
+    }
+
+    .content-split .bullets li {
+      font-size: clamp(0.65rem, 1vw, 0.8rem);
+    }
+
+    /* 3D model viewer */
+    model-viewer {
+      width: 100%;
+      height: min(28vh, 220px);
+      background: transparent;
+      border-radius: 6px;
+      border: 1px solid var(--accent-bdr);
+      box-shadow: 0 0 30px rgba(0,200,255,0.06);
+      --poster-color: transparent;
+    }
+
+    /* Two models side by side */
+    .model-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+      width: 100%;
+    }
+
+    /* Small image strip below models */
+    .img-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+      width: 100%;
+    }
+
+    .img-strip img {
+      width: 100%;
+      height: min(14vh, 110px);
+      object-fit: contain;
+      border-radius: 4px;
+      border: 1px solid var(--accent-bdr);
+      box-shadow: 0 0 12px rgba(0,0,0,0.3);
+    }
+
+    /* Caption */
+    .caption {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      color: var(--muted);
+      text-align: center;
+      letter-spacing: 0.06em;
+    }
+
+    /* ===========================================
+       HERO SLIDE SPECIFICS
+       =========================================== */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(2rem, 5vw, 5rem);
+      align-items: center;
+      height: 100%;
+      max-height: calc(100dvh - var(--nav-h) - calc(2 * var(--slide-pad)));
+    }
+
+    .hero-left { display: flex; flex-direction: column; gap: var(--content-gap); }
+
+    .hero-right {
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      gap: 0.75rem;
+      max-height: min(84vh, 680px);
+      overflow: hidden;
+    }
+
+    .hero-right .row-top { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+
+    .hero-img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      border-radius: 6px;
+      border: 1px solid var(--accent-bdr);
+      box-shadow: 0 0 20px rgba(0,200,255,0.06);
+    }
+
+    .hero-img-main {
+      width: 100%;
+      max-height: min(44vh, 360px);
+      object-fit: contain;
+      border-radius: 6px;
+      border: 1px solid var(--accent-bdr);
+      box-shadow: 0 0 20px rgba(0,200,255,0.06);
+    }
+
+    /* Headshot container — swap the img src for your photo */
+    .headshot-wrap {
+      display: flex;
+      align-items: center;
+      gap: clamp(1rem, 2vw, 1.5rem);
+      margin-top: calc(var(--content-gap) * 0.5);
+    }
+
+    .headshot-frame {
+      width: clamp(80px, 12vw, 140px);
+      height: clamp(80px, 12vw, 140px);
+      border-radius: 50%;
+      border: 1.5px dashed var(--accent-bdr);
+      background: var(--accent-dim);
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .headshot-frame img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .headshot-placeholder-label {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .headshot-info {
+      display: flex; flex-direction: column; gap: 0.35rem;
+    }
+
+    .headshot-info .title-line {
+      font-size: var(--body-size);
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .headshot-info .subtitle-line {
+      font-size: var(--small-size);
+      color: var(--muted);
+    }
+
+    /* Glow orb behind hero text */
+    .glow-orb {
+      position: absolute;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(0,200,255,0.06) 0%, transparent 70%);
+      top: 50%; left: 25%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    /* Accent line decoration */
+    .deco-vline {
+      position: absolute;
+      right: clamp(2rem, 5vw, 5rem);
+      top: var(--nav-h);
+      bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--accent) 30%, var(--accent) 70%, transparent);
+      opacity: 0.15;
+    }
+
+    /* ===========================================
+       ABOUT SLIDE
+       =========================================== */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(2rem, 5vw, 5rem);
+      align-items: start;
+      max-height: calc(100dvh - var(--nav-h) - calc(2 * var(--slide-pad)));
+    }
+
+    /* About — flowing paragraph columns */
+    .about-paras {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(0.65rem, 1.2vh, 1rem);
+      margin-top: clamp(0.75rem, 1.5vw, 1.25rem);
+      overflow: hidden;
+    }
+
+    .about-para {
+      font-size: clamp(0.7rem, 1.05vw, 0.85rem);
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .about-para .dim {
+      color: var(--text);
+    }
+
+    /* ===========================================
+       FEA RESULTS SLIDE (full-width image)
+       =========================================== */
+    .fea-layout {
+      display: flex; flex-direction: column;
+      gap: var(--content-gap);
+      align-items: flex-start;
+      max-height: calc(100dvh - var(--nav-h) - calc(2 * var(--slide-pad)));
+      overflow: hidden;
+    }
+
+    /* ===========================================
+       ACADEMICS SLIDE (kymographs)
+       =========================================== */
+    .academics-layout {
+      display: flex; flex-direction: column;
+      gap: var(--content-gap);
+      max-height: calc(100dvh - var(--nav-h) - calc(2 * var(--slide-pad)));
+      overflow: hidden;
+    }
+
+    .kymo-pair {
+      display: flex; flex-direction: column;
+      gap: 0.65rem;
+      flex: 1;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    /* ===========================================
+       NEST OVERVIEW — single wide image
+       =========================================== */
+    .nest-full-img {
+      width: 100%;
+      max-height: min(42vh, 340px);
+      object-fit: contain;
+      border-radius: 6px;
+      border: 1px solid var(--accent-bdr);
+      box-shadow: 0 0 30px rgba(0,200,255,0.07);
+    }
+
+    /* Three-image grid for NEST hardware */
+    .img-trio {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.75rem;
+      max-height: min(42vh, 330px);
+      overflow: hidden;
+    }
+    .img-trio img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      border-radius: 6px;
+      border: 1px solid var(--accent-bdr);
+      box-shadow: 0 0 16px rgba(0,0,0,0.4);
+    }
+
+    /* ===========================================
+       ANIMATIONS — triggered by .visible class (IntersectionObserver)
+       =========================================== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.6s var(--ease-expo), transform 0.6s var(--ease-expo);
+    }
+
+    .slide.visible .reveal { opacity: 1; transform: translateY(0); }
+
+    /* Stagger delays for sequential children */
+    .reveal:nth-child(1) { transition-delay: 0.05s; }
+    .reveal:nth-child(2) { transition-delay: 0.15s; }
+    .reveal:nth-child(3) { transition-delay: 0.25s; }
+    .reveal:nth-child(4) { transition-delay: 0.35s; }
+    .reveal:nth-child(5) { transition-delay: 0.45s; }
+
+    /* Visual side animates slightly later */
+    .project-visual .reveal { transition-delay: 0.3s; }
+
+    /* ===========================================
+       EDIT MODE
+       =========================================== */
+    .edit-hotzone {
+      position: fixed; top: 0; left: 0;
+      width: 80px; height: 80px;
+      z-index: 10000;
+      cursor: default;
+    }
+
+    .edit-toggle {
+      position: fixed; top: 14px; left: 14px;
+      z-index: 10001;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--accent-bdr);
+      background: var(--bg2);
+      color: var(--accent);
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s, background 0.2s;
+    }
+
+    .edit-toggle.show,
+    .edit-toggle.active { opacity: 1; pointer-events: auto; }
+    .edit-toggle.active { background: var(--accent); color: var(--bg); }
+
+    .save-btn {
+      position: fixed; bottom: 1.5rem; right: 1.5rem;
+      z-index: 10001;
+      padding: 0.6rem 1.25rem;
+      background: var(--accent);
+      color: var(--bg);
+      border: none; border-radius: 4px;
+      font-family: var(--font-mono); font-size: var(--label-size);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      cursor: pointer;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s;
+    }
+
+    .save-btn.show { opacity: 1; pointer-events: auto; }
+
+    body.edit-mode [contenteditable="true"] {
+      outline: 1px dashed var(--accent-bdr);
+      border-radius: 2px;
+    }
+
+    /* ===========================================
+       RESPONSIVE BREAKPOINTS
+       =========================================== */
+    @media (max-height: 700px) {
+      :root {
+        --slide-pad:   clamp(1rem, 3vw, 2.5rem);
+        --content-gap: clamp(0.5rem, 1.2vw, 1rem);
+        --h2-size:     clamp(1.2rem, 2.5vw, 1.8rem);
+        --title-size:  clamp(2rem, 6vw, 4.5rem);
+      }
+    }
+
+    @media (max-height: 600px) {
+      :root {
+        --slide-pad:   clamp(0.75rem, 2.5vw, 1.75rem);
+        --content-gap: clamp(0.4rem, 1vw, 0.75rem);
+        --body-size:   clamp(0.7rem, 1.1vw, 0.85rem);
+      }
+      .nav-links { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      .two-col, .hero-grid, .about-grid {
+        grid-template-columns: 1fr;
+      }
+      .project-visual { max-height: min(35vh, 260px); }
+      .hero-right { display: none; }
+      .nav-links li:nth-child(n+5) { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-links { display: none; }
+      .img-trio { grid-template-columns: 1fr 1fr; }
+      .img-trio img:last-child { display: none; }
+    }
+
+    /* ===========================================
+       NAVBAR DROPDOWNS
+       Uses :hover + :focus-within for keyboard accessibility.
+       Dropdown stays open while cursor moves from trigger to menu.
+       =========================================== */
+    .nav-item { position: relative; }
+
+    .dropdown-arrow {
+      display: inline-block;
+      font-size: 0.55em;
+      margin-left: 0.3em;
+      vertical-align: middle;
+      transition: transform 0.2s var(--ease-expo);
+    }
+
+    .nav-dropdown {
+      position: absolute;
+      top: 100%;           /* flush — no gap, so hover never breaks */
+      left: 50%;
+      transform: translateX(-50%) translateY(-6px);
+      background: rgba(11, 13, 18, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--accent-bdr);
+      border-radius: 4px;
+      padding: 0.4rem 0;
+      padding-top: 10px;   /* visual gap lives inside the element, not outside */
+      min-width: 220px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s var(--ease-expo);
+      z-index: 300;
+    }
+
+    /* Small caret — positioned within the padding area */
+    .nav-dropdown::before {
+      content: '';
+      position: absolute;
+      top: 3px; left: 50%;
+      transform: translateX(-50%);
+      width: 8px; height: 8px;
+      background: var(--bg2);
+      border-left: 1px solid var(--accent-bdr);
+      border-top: 1px solid var(--accent-bdr);
+      clip-path: polygon(0 0, 100% 0, 0 100%);
+      rotate: 45deg;
+    }
+
+    .nav-item:hover .nav-dropdown,
+    .nav-item:focus-within .nav-dropdown {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .nav-item:hover .dropdown-arrow,
+    .nav-item:focus-within .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-link {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.5rem 1.1rem;
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s, background 0.15s;
+      white-space: nowrap;
+    }
+
+    .dropdown-link:hover { color: var(--accent); background: var(--accent-dim); }
+
+    .dropdown-link .dd-num {
+      color: var(--accent);
+      opacity: 0.7;
+      flex-shrink: 0;
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background: var(--accent-bdr);
+      margin: 0.3rem 0;
+    }
+
+    /* ===========================================
+       REDUCED MOTION
+       =========================================== */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { transition: opacity 0.3s ease; transform: none; }
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navbar ─────────────────────────────────── -->
+  <nav class="navbar">
+    <a href="#home" class="nav-logo">Eric (Yukun) Cao</a>
+    <ul class="nav-links">
+      <li class="nav-item"><a href="#home"      class="nav-link active" data-section="home">Home</a></li>
+      <li class="nav-item"><a href="#about"     class="nav-link"        data-section="about">About</a></li>
+
+      <!-- Analogic dropdown -->
+      <li class="nav-item">
+        <a href="#analogic" class="nav-link" data-section="analogic">
+          Analogic <span class="dropdown-arrow">▾</span>
+        </a>
+        <div class="nav-dropdown">
+          <a href="#analogic"      class="dropdown-link"><span class="dd-num">01</span> ConneCT Receiver Mount</a>
+          <a href="#power-link"    class="dropdown-link"><span class="dd-num">02</span> Power Link Fixture</a>
+          <a href="#xray-cart"     class="dropdown-link"><span class="dd-num">03</span> X-Ray Test Cart</a>
+          <a href="#fea-setup"     class="dropdown-link"><span class="dd-num">04</span> Adapter Plate — FEA</a>
+          <a href="#mfc-hardware"  class="dropdown-link"><span class="dd-num">05</span> MFC Data Acquisition</a>
+        </div>
+      </li>
+
+      <!-- Emerson dropdown -->
+      <li class="nav-item">
+        <a href="#emerson" class="nav-link" data-section="emerson">
+          Emerson <span class="dropdown-arrow">▾</span>
+        </a>
+        <div class="nav-dropdown">
+          <a href="#emerson"      class="dropdown-link"><span class="dd-num">01</span> Shrink-Fit Tooling</a>
+          <a href="#pilot-valve"  class="dropdown-link"><span class="dd-num">02</span> Pilot Valve Accumulator</a>
+        </div>
+      </li>
+
+      <li class="nav-item"><a href="#robotics"  class="nav-link" data-section="robotics">Robotics</a></li>
+      <li class="nav-item"><a href="#academics" class="nav-link" data-section="academics">Academics</a></li>
+      <li class="nav-item"><a href="#cad"       class="nav-link" data-section="cad">CAD</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── Edit UI ─────────────────────────────────── -->
+  <!-- Hover top-left corner or press E to enter edit mode -->
+  <div class="edit-hotzone"></div>
+  <button class="edit-toggle" id="editToggle" title="Edit mode (E)">✏</button>
+  <button class="save-btn" id="saveFileBtn">⬇ Save File</button>
+
+  <!-- ══════════════════════════════════════════════
+       SLIDE 1 — Hero
+       ══════════════════════════════════════════════ -->
+  <section class="slide" id="home" data-section="home">
+    <div class="glow-orb"></div>
+    <div class="deco-vline"></div>
+
+    <div class="hero-grid">
+      <div class="hero-left">
+        <p class="eyebrow reveal">Career Portfolio</p>
+        <h1 class="reveal">
+          Eric (Yukun)<br>
+          <span class="accent-word editable">Cao</span>
+        </h1>
+
+        <!-- Headshot: replace src="" with your photo path, e.g. src="portfolio-assets/headshot.jpg" -->
+        <div class="headshot-wrap reveal">
+          <div class="headshot-frame">
+            <img src="" alt="Eric (Yukun) Cao"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+            <span class="headshot-placeholder-label" style="display:none">Photo</span>
+          </div>
+          <div class="headshot-info">
+            <span class="title-line editable">Mechanical Engineering &amp; Physics</span>
+            <span class="subtitle-line editable">Northeastern University</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-right reveal">
+        <div class="row-top">
+          <img src="portfolio-assets/slide1_img1.jpg" alt="Electronics hardware" class="hero-img">
+          <img src="portfolio-assets/slide1_img3.jpg" alt="Lab equipment" class="hero-img">
+        </div>
+        <img src="portfolio-assets/slide1_img2.jpg" alt="Mechanical actuator assembly" class="hero-img-main">
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       SLIDE 2 — About Me
+       ══════════════════════════════════════════════ -->
+  <section class="slide" id="about" data-section="about">
+    <div class="about-grid">
+
+      <!-- Left column: heading + paragraphs 1 & 2 -->
+      <div>
+        <p class="eyebrow reveal">About Me</p>
+        <div class="about-paras reveal">
+          <p class="about-para editable">I chose engineering because I want to create something new. To achieve this, I have incorporated physics into my academic rigor, as <span class="dim">I believe that creating something novel requires bridging the science and abstract thought of physics with the application of engineering.</span> While this goal is ambitious, I have decided to break it down into more achievable pieces.</p>
+          <p class="about-para editable">Professionally, I believe it's essential to gain a deeper understanding of various industries and how each sector operates. <span class="dim">I value learning every aspect of the job site and applying ethics to every project.</span></p>
+          <img src="portfolio-assets/slide1_img4.jpg" alt="Microscopy lab image"
+               style="width:100%; max-height: min(22vh, 170px); object-fit: contain; border-radius: 6px; border: 1px solid var(--accent-bdr); box-shadow: 0 0 20px rgba(0,200,255,0.06);">
+        </div>
+      </div>
+
+      <!-- Right column: paragraphs 3, 4 & 5 -->
+      <div class="about-paras reveal" style="margin-top: 0; justify-content: center; display: flex; flex-direction: column; gap: clamp(0.65rem, 1.2vh, 1rem);">
+        <p class="about-para editable">When analyzing failure modes, I quantify them. If a laser safety sensor fails to trigger, I can calculate the relationship between rotational speed and pulse rate to determine the minimum detectable thickness. <span class="dim">I prefer to understand what is happening inside the "black box" before trusting it, and this approach has made me interdisciplinary by nature.</span></p>
+        <p class="about-para editable">Through my time at Northeastern, I have intentionally worked across domains. I have self-taught C/C++ on the job to reverse-engineer MFC code for GUI design, written MATLAB scripts for FFT-based modal analysis, and worked with various robotics tools. What motivates me is not the tool itself, but the transferable method behind it. <span class="dim">I look for principles that can be abstracted and reused across systems.</span></p>
+        <p class="about-para editable"><span class="dim">I am now seeking a position focused on research and experimental design to further apply critical thinking.</span> Alternatively, I am interested in a start-up environment to gain insight into how science can be applied in a fast-paced collaborative team dynamic.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       SLIDE 3 — ConneCT Receiver Mount (Analogic 1/5)
+       ══════════════════════════════════════════════ -->
+  <section class="slide" id="analogic" data-section="analogic">
+    <div style="display:flex; flex-direction:column; height:100%; gap:clamp(0.6rem,1.2vh,1rem);">
+
+      <!-- Text — full width across entire slide -->
+      <div class="project-text" style="flex:0 0 auto;">
+        <div class="project-meta reveal">
+          <span class="section-badge">Analogic</span>
+          <span class="project-num">01 / 05</span>
+        </div>
+        <h2 class="reveal editable">ConneCT Data Link<br>Receiver Mount</h2>
+
+        <!-- Background -->
+        <p class="body-text reveal editable">
+          Electrical engineering proposed integrating a higher-power data link receiver from the larger SeleCT security scanner
+          into the smaller ConneCT platform to improve signal performance.
+        </p>
+
+        <!-- Objectives + Design Constraints stacked single column -->
+        <div class="reveal">
+          <span class="section-label">Objectives</span>
+          <ul class="bullets" style="margin-bottom: clamp(0.5rem, 1vh, 0.85rem);">
+            <li class="editable">Design and prototype a mount to securely position the board beneath a rotating gantry while maintaining repeatable alignment and service accessibility.</li>
+          </ul>
+          <span class="section-label">Design Constraints</span>
+          <ul class="bullets">
+            <li class="editable">Open channels for wiring and access for data and power connections</li>
+            <li class="editable">Ensure repeatable antenna positioning during assembly</li>
+            <li class="editable">Enable technician-friendly access to fasteners and tooling for assembly and maintenance</li>
+            <li class="editable">Avoid interference with gantry rotation and adjacent components</li>
+          </ul>
+        </div>
+
+        <!-- Skills Applied -->
+        <div class="reveal">
+          <span class="section-label">Skills Applied</span>
+          <div class="tags">
+            <span class="tag">3D Modeling</span>
+            <span class="tag">Sheet Metal Design</span>
+            <span class="tag">Electronics & Firmware Integration</span>
+            <span class="tag">Full Design Ownership</span>
+            <span class="tag">Formal Design Review</span>
+            <span class="tag">Iterative Design Process</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visuals — 3D models + reference images in a row below the text -->
+      <div class="reveal" style="flex:1; display:grid; grid-template-columns:1fr 1fr; gap:0.6rem; min-height:0;">
+        <div class="model-pair">
+          <model-viewer
+            src="portfolio-assets/model3d1.glb"
+            alt="ConneCT receiver mount — model 1"
+            auto-rotate
+            camera-controls
+            rotation-per-second="20deg">
+          </model-viewer>
+          <model-viewer
+            src="portfolio-assets/model3d2.glb"
+            alt="ConneCT receiver mount — model 2"
+            auto-rotate
+            camera-controls
+            rotation-per-second="20deg">
+          </model-viewer>
+        </div>
+        <div class="img-strip" style="grid-template-columns:repeat(3,1fr); height:100%;">
+          <img src="portfolio-assets/slide4_img1.png" alt="Receiver mount detail" style="height:100%; max-height:min(18vh,140px);">
+          <img src="portfolio-assets/slide4_img2.png" alt="Receiver mount close-up" style="height:100%; max-height:min(18vh,140px);">
+          <img src="portfolio-assets/slide4_img3.jpg" alt="Receiver mount assembly" style="height:100%; max-height:min(18vh,140px);">
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       SLIDE 4 — Power Link Assembly Fixture (Analogic 2/5)
+       ══════════════════════════════════════════════ -->
+  <section class="slide" id="power-link" data-section="analogic">
+    <div style="display:flex; flex-direction:column; height:100%; gap:clamp(0.6rem,1.2vh,1rem);">
+
+      <!-- Text — full width -->
+      <div class="project-text" style="flex:0 0 auto;">
+        <div class="project-meta reveal">
+          <span class="section-badge">Analogic</span>
+          <span class="project-num">02 / 05</span>
+        </div>
+        <h2 class="reveal editable">Power Link<br>Assembly Fixture</h2>
+
+        <!-- Background -->
+        <p class="body-text reveal editable">
+          A new power link design was introduced where the geometry and installation method of ferrite bars
+          within an injection-molded ring required modification.
+        </p>
+
+        <!-- Objectives + Design Constraints stacked single column -->
+        <div class="reveal">
+          <span class="section-label">Objectives</span>
+          <ul class="bullets" style="margin-bottom: clamp(0.5rem, 1vh, 0.85rem);">
+            <li class="editable">Design an assembly fixture which can be used by manufacturing to secure ferrite bars in place within the ring while epoxy cures.</li>
+          </ul>
+          <span class="section-label">Design Constraints</span>
+          <ul class="bullets">
+            <li class="editable">The fixture must be easy to transport</li>
+            <li class="editable">Easily machinable to support scalability and future production volume</li>
+            <li class="editable">Maintain strict dimensional control between the base of the ferrite bars and a reference surface of the molded ring (critical spacing requirement)</li>
+          </ul>
+        </div>
+
+        <!-- Skills Applied -->
+        <div class="reveal">
+          <span class="section-label">Skills Applied</span>
+          <div class="tags">
+            <span class="tag">3D Modeling</span>
+            <span class="tag">2D Drawings</span>
+            <span class="tag">Full Design Ownership</span>
+            <span class="tag">Iterative Design Process</span>
+            <span class="tag">Design for Machining</span>
+            <span class="tag">Supplier/Manufacturer Relations</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visuals — 3D model + image side by side below text -->
+      <div class="reveal" style="flex:1; min-height:0; display:grid; grid-template-columns:1fr 1fr; gap:0.6rem; align-items:center;">
+        <model-viewer
+          src="portfolio-assets/model3d3.glb"
+          alt="Power Link assembly fixture — 3D model"
+          auto-rotate
+          camera-controls
+          rotation-per-second="20deg"
+          style="width:100%; height:min(20vh,160px);">
+        </model-viewer>
+        <img src="portfolio-assets/slide5_img1.png" alt="Power Link assembly drawing"
+             style="max-width:100%; max-height:min(20vh,160px); object-fit:contain; border-radius:6px; border:1px solid var(--accent-bdr); box-shadow:0 0 20px rgba(0,200,255,0.06);">
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       SLIDE 5 — X-Ray Sensor Board Test Cart (Analogic 3/5)
+       ══════════════════════════════════════════════ -->
+  <section class="slide" id="xray-cart" data-section="analogic">
+    <div style="display:flex; flex-direction:column; height:100%; gap:clamp(0.6rem,1.2vh,1rem);">
+
+      <!-- Text — full width -->
+      <div class="project-text" style="flex:0 0 auto;">
+        <div class="project-meta reveal">
+          <span class="section-badge">Analogic</span>
+          <span class="project-num">03 / 05</span>
+        </div>
+        <h2 class="reveal editable">X-Ray Sensor Board<br>Test Cart</h2>
+
+        <!-- Background -->
+        <p class="body-text reveal editable">
+          The Electrical Engineering team required a method for validating newly produced X-ray sensor boards.
+          The X-ray supplier provided access to a lead chamber suitable for controlled exposure testing.
+        </p>
+
+        <!-- Objectives + Design Constraints stacked single column -->
+        <div class="reveal">
+          <span class="section-label">Objectives</span>
+          <ul class="bullets" style="margin-bottom: clamp(0.5rem, 1vh, 0.85rem);">
+            <li class="editable">Design a modular test fixture to enable fast swapping of sensor board arrays and associated components for functional verification under X-ray exposure.</li>
+          </ul>
+          <span class="section-label">Design Constraints</span>
+          <ul class="bullets">
+            <li class="editable">Balanced and portable for safe transport</li>
+            <li class="editable">Compact form factor to fit within a lead test chamber</li>
+            <li class="editable">Accessible and organized routing for all control electronics and interconnects</li>
+            <li class="editable">Proper shielding of sensitive electronics</li>
+            <li class="editable">Uniform X-ray flood coverage across the full sensor array</li>
+          </ul>
+        </div>
+
+        <!-- Skills Applied -->
+        <div class="reveal">
+          <span class="section-label">Skills Applied</span>
+          <div class="tags">
+            <span class="tag">3D Modeling</span>
+            <span class="tag">2D Drawings with GD&amp;T</span>
+            <span class="tag">Full Design Ownership</span>
+            <span class="tag">Iterative Design Process</span>
+            <span class="tag">Design for Machining</span>
+            <span class="tag">Supplier/Manufacturer Relations</span>
+            <span class="tag">X-Ray System Design Principles</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visuals — model4 + 3 images in a row below text -->
+      <div class="reveal" style="flex:1; min-height:0; display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:0.6rem; align-items:center;">
+        <model-viewer
+          src="portfolio-assets/model3d4.glb"
+          alt="X-Ray test cart — 3D model"
+          auto-rotate
+          camera-controls
+          rotation-per-second="20deg"
+          style="width:100%; height:min(20vh,160px);">
+        </model-viewer>
+        <img src="portfolio-assets/slide6_img1.png" alt="X-Ray test cart 3D model"
+             style="max-width:100%; max-height:min(20vh,160px); object-fit:contain; border-radius:6px; border:1px solid var(--accent-bdr); box-shadow:0 0 20px rgba(0,200,255,0.06);">
+        <img src="portfolio-assets/slide6_img2.png" alt="Test cart assembly drawing"
+             style="max-width:100%; max-height:min(20vh,160px); object-fit:contain; border-radius:6px; border:1px solid var(--accent-bdr); box-shadow:0 0 20px rgba(0,200,255,0.06);">
+        <img src="portfolio-assets/slide6_img3.png" alt="Test cart detail"
+             style="max-width:100%; max-height:min(20vh,160px); object-fit:contain; border-radius:6px; border:1px solid var(--accent-bdr); box-shadow:0 0 20px rgba(0,200,255,0.06);">
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       SLIDE 6 — FEA Setup (Analogic 4/5)
+       ══════════════════════════════════════════════ -->
+  <section class="slide" id="fea-setup" data-section="analogic">
+    <div style="display:flex; flex-direction:column; height:100%; gap:clamp(0.6rem,1.2vh,1rem);">
+
+      <!-- Text — full width -->
+      <div class="project-text" style="flex:0 0 auto;">
+        <div class="project-meta reveal">
+          <span class="section-badge">Analogic</span>
+          <span class="project-num">04 / 05</span>
+        </div>
+        <h2 class="reveal editable">X-Ray Generator<br>Adapter Plate — FEA</h2>
+
+        <!-- Background -->
+        <p class="body-text reveal editable">
+          A higher-power X-ray generator was introduced, requiring a redesigned adapter plate to interface with the existing system structure.
+        </p>
+
+        <!-- Objectives + Design Constraints stacked single column -->
+        <div class="reveal">
+          <span class="section-label">Objectives</span>
+          <ul class="bullets" style="margin-bottom: clamp(0.5rem, 1vh, 0.85rem);">
+            <li class="editable">Evaluate structural integrity of the new adapter plate under increased loading conditions, identify potential failure modes, and verify that the design maintains an appropriate factor of safety.</li>
+          </ul>
+          <span class="section-label">Design Constraints</span>
+          <ul class="bullets">
+            <li class="editable">The FEA must use a reasonable amount of solve time and computational power</li>
+            <li class="editable">Simplify rotating and non-critical components while preserving load paths</li>
+          </ul>
+        </div>
+
+        <!-- Skills Applied -->
+        <div class="reveal">
+          <span class="section-label">Skills Applied</span>
+          <div class="tags">
+            <span class="tag">SolidWorks Simulation (FEA)</span>
+            <span class="tag">Failure Mode Evaluation</span>
+            <span class="tag">Engineering Judgment in Safety Factor Interpretation</span>
+            <span class="tag">Collaboration with Principal Mechanical Engineer</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visuals — 2 images side by side below text -->
+      <div class="reveal" style="flex:1; min-height:0; display:grid; grid-template-columns:1fr 1fr; gap:0.6rem; align-items:center;">
+        <img src="portfolio-assets/slide7_img1.png" alt="Adapter plate with load conditions"
+             style="max-width:100%; max-height:min(20vh,160px); object-fit:contain; border-radius:6px; border:1px solid var(--accent-bdr); box-shadow:0 0 20px rgba(0,200,255,0.06);">
+        <img src="portfolio-assets/slide7_img2.png" alt="Adapter plate FEA result"
+             style="max-width:100%; max-height:min(20vh,160px); object-fit:contain; border-radius:6px; border:1px solid var(--accent-bdr); box-shadow:0 0 20px rgba(0,200,255,0.06);">
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       SLIDE 8 — MFC GUI: Hardware (Analogic 5/5)
+       ══════════════════════════════════════════════ -->
+  <section class="slide" id="mfc-hardware" data-section="analogic">
+    <div style="display:flex; flex-direction:column; height:100%; gap:clamp(0.6rem,1.2vh,1rem);">
+
+      <!-- Text — full width -->
+      <div class="project-text" style="flex:0 0 auto;">
+        <div class="project-meta reveal">
+          <span class="section-badge">Analogic</span>
+          <span class="project-num">05 / 05</span>
+        </div>
+        <h2 class="reveal editable">MFC Data Acquisition<br>GUI</h2>
+
+        <!-- Background -->
+        <p class="body-text reveal editable">
+          Airport security scanners are required to maintain consistent throughput, making reliability critical. Ball bearings within rotating drum assemblies are high-wear components and were being evaluated on a life-testing platform to better understand failure modes.
+        </p>
+
+        <!-- Objectives + Process stacked single column -->
+        <div class="reveal">
+          <span class="section-label">Objectives</span>
+          <ul class="bullets" style="margin-bottom: clamp(0.5rem, 1vh, 0.85rem);">
+            <li class="editable">Integrate ball bearing and "truck" lifetime monitoring into existing machine health metrics (temperature, RPM, throughput, jam detection) by determining whether accelerometer data could serve as an early indicator of bearing degradation.</li>
+          </ul>
+          <span class="section-label">Process</span>
+          <ul class="bullets">
+            <li class="editable">Being more of a R&D project, the aim was to first determine correlation between vibration (peak to peak g-values) and bearing failure behavior</li>
+            <li class="editable">Reverse-engineered an existing two-channel histogram-based GUI</li>
+            <li class="editable">Extended architecture to support four simultaneous channels for monitoring additional trucks</li>
+            <li class="editable">Parsed serial data streams from embedded hardware</li>
+            <li class="editable">Histograms were saved hourly, recording data once drum has reached steady state; most populated bin (dominant vibrational bin) was logged per hour for each truck to be trended over time</li>
+          </ul>
+        </div>
+
+        <!-- Skills Applied -->
+        <div class="reveal">
+          <span class="section-label">Skills Applied</span>
+          <div class="tags">
+            <span class="tag">Self-Taught C++ On the Job</span>
+            <span class="tag">Embedded Systems & Serial Communication</span>
+            <span class="tag">Custom RS-232 Data Frames</span>
+            <span class="tag">OOP & Dynamic Memory</span>
+            <span class="tag">Histogram Binning & Time-Based Logging</span>
+            <span class="tag">Dialogue Design</span>
+            <span class="tag">Vibration-Based Failure Analysis</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visuals — 3 images in one row -->
+      <div class="reveal" style="flex:1; min-height:0; display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.6rem; align-items:center;">
+        <img src="portfolio-assets/slide8_img1.png" alt="MFC GUI histogram"
+             style="max-width:100%; max-height:min(22vh,180px); width:auto; height:auto; display:block; margin:auto; object-fit:contain; border-radius:6px; border:1px solid var(--accent-bdr); box-shadow:0 0 20px rgba(0,200,255,0.06);">
+        <img src="portfolio-assets/slide8_img5.jpg" alt="Encoder board on bearing assembly"
+             style="max-width:100%; max-height:min(22vh,180px); width:auto; height:auto; display:block; margin:auto; object-fit:contain; border-radius:6px; border:1px solid var(--accent-bdr); box-shadow:0 0 20px rgba(0,200,255,0.06);">
+        <img src="portfolio-assets/slide8_img6.jpg" alt="ADXL335 accelerometer mounted"
+             style="max-width:100%; max-height:min(22vh,180px); width:auto; height:auto; display:block; margin:auto; object-fit:contain; border-radius:6px; border:1px solid var(--accent-bdr); box-shadow:0 0 20px rgba(0,200,255,0.06);">
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       SLIDE 9 — MFC GUI: Software (Analogic 5/5)
+       ══════════════════════════════════════════════ -->
+  <!-- ══════════════════════════════════════════════
+       SLIDE 10 — Shrink-Fit Tooling (Emerson 1/2)
+       ══════════════════════════════════════════════ -->
+  <section class="slide" id="emerson" data-section="emerson">
+    <div style="display:flex; flex-direction:column; height:100%; gap:clamp(0.6rem,1.2vh,1rem);">
+
+      <!-- Text — full width -->
+      <div class="project-text" style="flex:0 0 auto;">
+        <div class="project-meta reveal">
+          <span class="section-badge">Emerson</span>
+          <span class="project-num">01 / 02</span>
+        </div>
+        <h2 class="reveal editable">Shrink-Fit Tooling &amp;<br>Assembly Work Instructions</h2>
+
+        <!-- Background -->
+        <p class="body-text reveal editable">
+          The seat component of a three-way valve was difficult to drop into its larger body. Dimensional variation and surface finish affected proper seating and assembly consistency.
+        </p>
+
+        <!-- Objectives + Design Constraints stacked single column -->
+        <div class="reveal">
+          <span class="section-label">Objectives</span>
+          <ul class="bullets" style="margin-bottom: clamp(0.5rem, 1vh, 0.85rem);">
+            <li class="editable">Design tooling to hold the seat component in a lathe for material removal and polishing. Document the new assembly and machining process in a set of work instructions for manufacturing.</li>
+          </ul>
+          <span class="section-label">Design Constraints</span>
+          <ul class="bullets">
+            <li class="editable">Tooling to be manufacturable on a lathe</li>
+          </ul>
+        </div>
+
+        <!-- Skills Applied -->
+        <div class="reveal">
+          <span class="section-label">Skills Applied</span>
+          <div class="tags">
+            <span class="tag">Technical Writing and Documentation</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visuals — 3 images in one row below text -->
+      <div class="reveal" style="flex:1; min-height:0; display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.6rem; align-items:center;">
+        <img src="portfolio-assets/slide9_img1.png" alt="Seat component lathe tooling"
+             style="max-width:100%; max-height:min(20vh,160px); width:auto; height:auto; display:block; margin:auto; object-fit:contain; border-radius:6px; border:1px solid var(--accent-bdr); box-shadow:0 0 20px rgba(0,200,255,0.06);">
+        <img src="portfolio-assets/slide9_img2.png" alt="SPVD housing and seat assembly drawing"
+             style="max-width:100%; max-height:min(20vh,160px); width:auto; height:auto; display:block; margin:auto; object-fit:contain; border-radius:6px; border:1px solid var(--accent-bdr); box-shadow:0 0 20px rgba(0,200,255,0.06);">
+        <img src="portfolio-assets/image24.png" alt="Shrink-fit tooling detail"
+             style="max-width:100%; max-height:min(20vh,160px); width:auto; height:auto; display:block; margin:auto; object-fit:contain; border-radius:6px; border:1px solid var(--accent-bdr); box-shadow:0 0 20px rgba(0,200,255,0.06);">
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       SLIDE 11 — Pilot Valve Accumulator (Emerson 2/2)
+       ══════════════════════════════════════════════ -->
+  <section class="slide" id="pilot-valve" data-section="emerson">
+    <div style="display:flex; flex-direction:column; height:100%; gap:clamp(0.6rem,1.2vh,1rem);">
+
+      <!-- Text — full width -->
+      <div class="project-text" style="flex:0 0 auto;">
+        <div class="project-meta reveal">
+          <span class="section-badge">Emerson</span>
+          <span class="project-num">02 / 02</span>
+        </div>
+        <h2 class="reveal editable">Pilot Valve Accumulator<br>Test Fixture</h2>
+
+        <!-- Background -->
+        <p class="body-text reveal editable">
+          New simulator needed to be built, but legacy documentation was incomplete. The existing test site could not achieve the operating pressure required to actuate the pilot valve, nor accommodate the diameter of the full-scale valve assembly.
+        </p>
+
+        <!-- Objectives + Design Constraints stacked single column -->
+        <div class="reveal">
+          <span class="section-label">Objectives</span>
+          <ul class="bullets" style="margin-bottom: clamp(0.5rem, 1vh, 0.85rem);">
+            <li class="editable">Design a compact pressure accumulation simulator to reliably trigger the smaller pilot valve under representative operating conditions. Functionally, the system is analogous to a capacitor in an electrical circuit — storing pressure energy and releasing it to produce a controlled actuation event.</li>
+          </ul>
+          <span class="section-label">Design Constraints</span>
+          <ul class="bullets">
+            <li class="editable">Compliance with material limits and standard pressure ratings</li>
+          </ul>
+        </div>
+
+        <!-- Skills Applied -->
+        <div class="reveal">
+          <span class="section-label">Skills Applied</span>
+          <div class="tags">
+            <span class="tag">Fluid Accumulator Design</span>
+            <span class="tag">Pressure Vessel Design Principles</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visuals — 2 images side by side below text -->
+      <div class="reveal" style="flex:1; min-height:0; display:grid; grid-template-columns:1fr 1fr; gap:0.6rem; align-items:center;">
+        <img src="portfolio-assets/slide10_img1.png" alt="Pilot valve assembly"
+             style="max-width:100%; max-height:min(20vh,160px); width:auto; height:auto; display:block; margin:auto; object-fit:contain; border-radius:6px; border:1px solid var(--accent-bdr); box-shadow:0 0 20px rgba(0,200,255,0.06);">
+        <img src="portfolio-assets/slide10_img2.png" alt="Pilot valve 3D render"
+             style="max-width:100%; max-height:min(20vh,160px); width:auto; height:auto; display:block; margin:auto; object-fit:contain; border-radius:6px; border:1px solid var(--accent-bdr); box-shadow:0 0 20px rgba(0,200,255,0.06);">
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       SLIDE 12 — NEST Overview (Robotics)
+       ══════════════════════════════════════════════ -->
+  <section class="slide" id="robotics" data-section="robotics">
+    <div style="display:flex; flex-direction:column; height:100%; gap:clamp(0.6rem,1.2vh,1rem);">
+
+      <!-- Text — full width -->
+      <div class="project-text" style="flex:0 0 auto;">
+        <div class="project-meta reveal">
+          <span class="section-badge">Academic / Robotics</span>
+        </div>
+        <h2 class="reveal editable">NEST — Snake Robot<br><span class="accent-word">Swarm Platform</span></h2>
+
+        <!-- Background -->
+        <p class="body-text reveal editable">
+          NEST, miniaturized snake-like robots intended for exploration with swarm capabilities.
+        </p>
+
+        <!-- Objectives + Process stacked single column -->
+        <div class="reveal">
+          <span class="section-label">Objectives</span>
+          <ul class="bullets" style="margin-bottom: clamp(0.5rem, 1vh, 0.85rem);">
+            <li class="editable">Develop body modules capable of housing onboard electronics and actuation</li>
+            <li class="editable">Contribute to an open-source SLAM framework enabling collaboration between a snake robot and a leader–follower robotic arm</li>
+            <li class="editable">Explore imitation learning concepts through coordinated arm–snake interaction</li>
+          </ul>
+          <span class="section-label">Process</span>
+          <ul class="bullets">
+            <li class="editable">Designed and iterated 3D-printed modular joint housings to reduce size while maintaining structural integrity</li>
+            <li class="editable">Integrated embedded systems (ESP32, IMU, and camera) for controls</li>
+            <li class="editable">Calibrated motor homing offsets</li>
+            <li class="editable">Working on untethering the robot</li>
+          </ul>
+        </div>
+
+        <!-- Skills Applied -->
+        <div class="reveal">
+          <span class="section-label">Skills Applied</span>
+          <div class="tags">
+            <span class="tag">Mechanical Design for Compact Electromechanical Systems</span>
+            <span class="tag">Iterative Prototyping & Hardware–Software Debugging</span>
+            <span class="tag">SLAM (Simultaneous Localization and Mapping)</span>
+            <span class="tag">Reinforcement Learning Methods</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visuals — 4 images in a row below text -->
+      <div class="reveal" style="flex:1; min-height:0; display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:0.6rem; align-items:center;">
+        <img src="portfolio-assets/slide11_img3.jpg" alt="Full NEST snake robot assembly"
+             style="max-width:100%; max-height:min(16vh,130px); width:auto; height:auto; display:block; margin:auto; object-fit:contain; border-radius:6px; border:1px solid var(--accent-bdr); box-shadow:0 0 20px rgba(0,200,255,0.06);">
+        <img src="portfolio-assets/slide11_img1.jpg" alt="NEST body module with PCB"
+             style="max-width:100%; max-height:min(16vh,130px); width:auto; height:auto; display:block; margin:auto; object-fit:contain; border-radius:6px; border:1px solid var(--accent-bdr); box-shadow:0 0 20px rgba(0,200,255,0.06);">
+        <img src="portfolio-assets/slide11_img2.jpg" alt="ESP32-CAM module"
+             style="max-width:100%; max-height:min(16vh,130px); width:auto; height:auto; display:block; margin:auto; object-fit:contain; border-radius:6px; border:1px solid var(--accent-bdr); box-shadow:0 0 20px rgba(0,200,255,0.06);">
+        <img src="portfolio-assets/slide11_img4.jpg" alt="NEST robot demo in lab"
+             style="max-width:100%; max-height:min(16vh,130px); width:auto; height:auto; display:block; margin:auto; object-fit:contain; border-radius:6px; border:1px solid var(--accent-bdr); box-shadow:0 0 20px rgba(0,200,255,0.06);">
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       SLIDE 14 — Academics: Image Processing
+       ══════════════════════════════════════════════ -->
+  <section class="slide" id="academics" data-section="academics">
+    <div class="academics-layout">
+      <div class="reveal">
+        <div class="project-meta" style="margin-bottom: 0.65rem;">
+          <span class="section-badge">Academics</span>
+        </div>
+        <h2 class="editable">Fluorescence Image<br>Processing — <span class="accent-word">Python / OpenCV</span></h2>
+      </div>
+      <p class="body-text reveal editable">
+        Applied image-processing techniques in Python (OpenCV) to analyze fluorescence image arrays, implementing kymograph masking and box-blur filtering to isolate regions of interest and suppress background noise. Emphasized feature extraction and quantitative analysis of pixel-level RGB intensity data across large multidimensional arrays.
+      </p>
+      <div class="kymo-pair reveal">
+        <div class="kymo-wrap">
+          <img src="portfolio-assets/academics_kymograph_cropped.png" alt="Final Cropped DNA Strands kymograph">
+        </div>
+        <div class="kymo-wrap">
+          <img src="portfolio-assets/academics_kymograph_masked.png" alt="Masked Red Channel kymograph">
+        </div>
+      </div>
+      <div class="tags reveal">
+        <span class="tag">Python</span>
+        <span class="tag">OpenCV</span>
+        <span class="tag">Kymograph Analysis</span>
+        <span class="tag">Feature Extraction</span>
+        <span class="tag">NumPy</span>
+      </div>
+
+      <!-- Technical Writing PDFs -->
+      <div class="reveal">
+        <span class="section-label" style="margin-bottom: 0.6rem;">Technical Writing</span>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+          <div>
+            <iframe src="portfolio-assets/HALL3600.pdf"
+                    style="width:100%; height:min(22vh,175px); border:1px solid var(--accent-bdr); border-radius:6px; background:var(--bg2);"
+                    title="HALL3600 Writing Sample">
+            </iframe>
+            <p style="font-family:var(--font-mono); font-size:var(--label-size); color:var(--muted); margin-top:0.3rem; text-align:center; letter-spacing:0.08em;">
+              HALL 3600 — Writing Sample
+              <a href="portfolio-assets/HALL3600.pdf" target="_blank"
+                 style="color:var(--accent); margin-left:0.5rem; text-decoration:none;">↗ Open</a>
+            </p>
+          </div>
+          <div>
+            <iframe src="portfolio-assets/HALLPOSTER.pdf"
+                    style="width:100%; height:min(22vh,175px); border:1px solid var(--accent-bdr); border-radius:6px; background:var(--bg2);"
+                    title="HALL Poster">
+            </iframe>
+            <p style="font-family:var(--font-mono); font-size:var(--label-size); color:var(--muted); margin-top:0.3rem; text-align:center; letter-spacing:0.08em;">
+              HALL Poster
+              <a href="portfolio-assets/HALLPOSTER.pdf" target="_blank"
+                 style="color:var(--accent); margin-left:0.5rem; text-decoration:none;">↗ Open</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       SLIDE 15 — CAD Samples
+       ══════════════════════════════════════════════ -->
+  <section class="slide" id="cad" data-section="cad">
+    <div class="two-col">
+      <div class="project-text">
+        <p class="eyebrow reveal">CAD Samples</p>
+        <h2 class="reveal editable">Advanced Surface<br>Modeling</h2>
+        <p class="body-text reveal editable">
+          Exploration of advanced SolidWorks surfacing techniques — demonstrating
+          proficiency in lofting, combining, and knitting complex geometry.
+        </p>
+        <div class="tags reveal">
+          <span class="tag">SolidWorks</span>
+          <span class="tag">Surface Modeling</span>
+          <span class="tag">Lofting</span>
+          <span class="tag">Knitting</span>
+          <span class="tag">Combine</span>
+        </div>
+      </div>
+      <div class="project-visual" style="display:grid; grid-template-columns:1fr 1fr; gap:0.6rem; align-items:center;">
+        <img src="portfolio-assets/slide13_img1.png" alt="CAD lofted surface model"
+             style="max-width:100%; max-height:min(35vh,280px); width:auto; height:auto; object-fit:contain; border-radius:6px; border:1px solid var(--accent-bdr); box-shadow:0 0 20px rgba(0,200,255,0.06);">
+        <model-viewer
+          src="portfolio-assets/model3d5.glb"
+          alt="SolidWorks surface model — 3D"
+          auto-rotate
+          camera-controls
+          rotation-per-second="20deg"
+          style="width:100%; height:min(35vh,280px);">
+        </model-viewer>
+      </div>
+    </div>
+  </section>
+
+
+  <script>
+    /* ===========================================
+       SLIDE PRESENTATION CONTROLLER
+       Handles navigation, animations, and navbar highlighting
+       =========================================== */
+    class SlidePresentation {
+      constructor() {
+        this.slides = Array.from(document.querySelectorAll('.slide'));
+        this.navLinks = Array.from(document.querySelectorAll('.nav-link'));
+        this.currentIndex = 0;
+        this.isScrolling = false;
+
+        this.initIntersectionObserver();
+        this.initKeyboard();
+        this.initScrollUpdate();
+      }
+
+      /* Trigger reveal animations + update navbar as slides enter view */
+      initIntersectionObserver() {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                this.currentIndex = this.slides.indexOf(entry.target);
+                this.updateNav(entry.target.dataset.section);
+              }
+            });
+          },
+          { threshold: 0.5 }
+        );
+        this.slides.forEach(slide => observer.observe(slide));
+      }
+
+      /* Highlight the correct navbar link for the active section */
+      updateNav(section) {
+        this.navLinks.forEach(link => {
+          link.classList.toggle('active', link.dataset.section === section);
+        });
+      }
+
+      /* Arrow keys and Space for navigation (skip when editing text) */
+      initKeyboard() {
+        document.addEventListener('keydown', (e) => {
+          if (e.target.getAttribute('contenteditable') === 'true') return;
+          switch (e.key) {
+            case 'ArrowDown':
+            case 'ArrowRight':
+            case ' ':
+              e.preventDefault();
+              this.navigate(1);
+              break;
+            case 'ArrowUp':
+            case 'ArrowLeft':
+              e.preventDefault();
+              this.navigate(-1);
+              break;
+          }
+        });
+      }
+
+      navigate(dir) {
+        const next = Math.max(0, Math.min(this.slides.length - 1, this.currentIndex + dir));
+        if (next !== this.currentIndex) {
+          this.currentIndex = next;
+          this.slides[this.currentIndex].scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+
+      /* Keep currentIndex in sync with manual scrolling */
+      initScrollUpdate() {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                this.currentIndex = this.slides.indexOf(entry.target);
+              }
+            });
+          },
+          { threshold: 0.8 }
+        );
+        this.slides.forEach(s => observer.observe(s));
+      }
+    }
+
+    /* ===========================================
+       INLINE EDITOR
+       Hover top-left corner or press E to toggle.
+       Auto-saves text to localStorage; Ctrl+S exports HTML file.
+
+       ⚠ Uses JS hover (NOT CSS ~ sibling selector) because
+         pointer-events: none breaks the CSS hover chain.
+       =========================================== */
+    class SlideEditor {
+      constructor() {
+        this.isActive = false;
+        this.saveTimeout = null;
+        this.editables = Array.from(document.querySelectorAll('.editable'));
+
+        this.toggle     = document.getElementById('editToggle');
+        this.saveBtn    = document.getElementById('saveFileBtn');
+        this.hotzone    = document.querySelector('.edit-hotzone');
+
+        this.initHotzone();
+        this.initKeyboard();
+        this.initAutoSave();
+        this.loadFromStorage();
+        this.saveBtn.addEventListener('click', () => this.exportFile());
+      }
+
+      /* JS hover with 400ms grace period so button stays visible */
+      initHotzone() {
+        let hideTimer = null;
+        const show = () => { clearTimeout(hideTimer); this.toggle.classList.add('show'); };
+        const hide = () => {
+          hideTimer = setTimeout(() => {
+            if (!this.isActive) this.toggle.classList.remove('show');
+          }, 400);
+        };
+
+        this.hotzone.addEventListener('mouseenter', show);
+        this.hotzone.addEventListener('mouseleave', hide);
+        this.toggle.addEventListener('mouseenter',  show);
+        this.toggle.addEventListener('mouseleave',  hide);
+
+        this.hotzone.addEventListener('click', () => this.toggleEditMode());
+        this.toggle.addEventListener('click',  () => this.toggleEditMode());
+      }
+
+      initKeyboard() {
+        document.addEventListener('keydown', (e) => {
+          /* E key toggles edit mode */
+          if ((e.key === 'e' || e.key === 'E') && !e.target.getAttribute('contenteditable')) {
+            this.toggleEditMode();
+          }
+          /* Ctrl+S saves file while in edit mode */
+          if (e.ctrlKey && e.key === 's' && this.isActive) {
+            e.preventDefault();
+            this.exportFile();
+          }
+        });
+      }
+
+      toggleEditMode() {
+        this.isActive = !this.isActive;
+        const ce = this.isActive ? 'true' : 'false';
+        this.editables.forEach(el => { el.contentEditable = ce; });
+
+        this.toggle.classList.toggle('active', this.isActive);
+        this.toggle.title = this.isActive ? 'Exit edit mode (E)' : 'Edit mode (E)';
+        this.saveBtn.classList.toggle('show', this.isActive);
+        document.body.classList.toggle('edit-mode', this.isActive);
+      }
+
+      /* Auto-save individual element text content to localStorage */
+      initAutoSave() {
+        this.editables.forEach((el, i) => {
+          el.addEventListener('input', () => {
+            clearTimeout(this.saveTimeout);
+            this.saveTimeout = setTimeout(() => this.saveToStorage(), 800);
+          });
+        });
+      }
+
+      saveToStorage() {
+        const data = { _v: 23 }; /* bump _v whenever HTML structure changes to auto-clear old saves */
+        this.editables.forEach((el, i) => { data[i] = el.innerHTML; });
+        try { localStorage.setItem('portfolio-edits', JSON.stringify(data)); } catch(e) {}
+      }
+
+      loadFromStorage() {
+        try {
+          const data = JSON.parse(localStorage.getItem('portfolio-edits') || 'null');
+          /* If no save or version mismatch, discard stale data */
+          if (!data || data._v !== 4) {
+            localStorage.removeItem('portfolio-edits');
+            return;
+          }
+          this.editables.forEach((el, i) => {
+            if (data[i] !== undefined) el.innerHTML = data[i];
+          });
+        } catch(e) { localStorage.removeItem('portfolio-edits'); }
+      }
+
+      /* Download current HTML as file */
+      exportFile() {
+        const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+        const blob = new Blob([html], { type: 'text/html' });
+        const a    = document.createElement('a');
+        a.href     = URL.createObjectURL(blob);
+        a.download = 'EricCao-Portfolio.html';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }
+    }
+
+    /* Boot */
+    const presentation = new SlidePresentation();
+    const editor       = new SlideEditor();
+  </script>
+</body>
+</html>
